@@ -7,6 +7,7 @@ Orientador: Thiago Gentil Ramires
 script adaptado 
 
 Prof. Dr. Helder Prado
+
 Prof. Dr. Wilson Tarantin Jr.
 
-Base de dados: totalmente descaracterizada sem nenhum tipo de identificaçào
+Base de dados: totalmente descaracterizada sem nenhum tipo de identificação
