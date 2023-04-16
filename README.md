@@ -12,3 +12,5 @@ Prof. Dr. Helder Prado
 Prof. Dr. Wilson Tarantin Jr.
 
 Base de dados: totalmente descaracterizada sem nenhum tipo de identificação
+
+Python versão 3.9.7
