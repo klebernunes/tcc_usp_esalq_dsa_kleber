@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-# MBA USP ESALQ
+# MBA USP ESALQ 
 #
 # TCC: Classificação de pacientes para direcionamento de programas de saúde preventivos
 # Kleber S. Nunes
 # 
 # Orientador: Thiago Gentil Ramires
+#
 # script adaptado 
 # Prof. Dr. Helder Prado
 # Prof. Dr. Wilson Tarantin Jr.
-# 
-# Processamento Modelos
 #
 #%% Importando os pacotes necessários
 
@@ -35,7 +34,7 @@ from   pandas_profiling              import ProfileReport
 
 #%% Carregando o dataset
 print("------------------ início fase preparação --------------------")
-df = pd.read_csv("base_pesquisa_jan_2022_a_dez_2022.csv",delimiter=";")
+df = pd.read_csv("../data/base_pesquisa_jan_2022_a_dez_2022.csv",delimiter=";")
 
 #%% realizando analise do dataset antes de qualquer manipulação
 # Características das variáveis do dataset
@@ -103,7 +102,7 @@ df = df.drop('MES_REALIZACAO',        axis=1)
 profile_reduzido = ProfileReport(df, minimal=True)
 profile_reduzido.to_file(output_file="overview_base_dados_final.html")
 del profile_reduzido
-
+ 
 #%% Transformando variáveis categóricas em dummies
 df = pd.get_dummies(df, columns=['COD_PROCEDIMENTO','IND_SEXO','IND_TIPO_ATD_AMBULATORIAL','IND_REGIME_INTERNACAO','IND_TIPO_INTERNACAO'])
 del df_ajustado
@@ -125,7 +124,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 #%% Bagging
 #%% 1: Para fins de comparação, estima-se uma árvore de classificação
 
-tree_clf = DecisionTreeClassifier(max_depth=4, random_state=42)
+tree_clf = DecisionTreeClassifier(max_depth=4, random_state=42,)
 tree_clf.fit(X_train, y_train)
 
 # Predict do modelo de uma árvore
@@ -133,7 +132,6 @@ y_pred_tree = tree_clf.predict(X_test)
 
 # Matriz de classificação para uma árvore
 print(classification_report(y_test, y_pred_tree))
-
 
 #%%  1a matriz de confusão
 plt.figure(figsize=(10,6))
@@ -144,11 +142,11 @@ fx.set_xlabel('\n Predicted Values\n')
 fx.set_ylabel('Actual Values\n');
 plt.show()
 
+
 #%% 1b curva ROC 
 
 classes=y
-roc_auc( 
-          tree_clf,
+roc_auc(  tree_clf,
           X_train, y_train, X_test, y_test,
           per_class=False
           )
@@ -159,10 +157,9 @@ del tree_clf
 del y_pred_tree
 
 
-
 #%% 2: Estimando um modelo bagging com base em árvores de classificação
 
-bag_clf = BaggingClassifier(
+bag_clf = BaggingClassifier(  
     DecisionTreeClassifier(max_depth=4), # modelo base: árvore de classificação
     n_estimators=500,
     max_samples=50,
@@ -200,8 +197,7 @@ plt.show()
 #%% 2b curva ROC
 
 classes=y
-roc_auc( 
-          bag_clf,
+roc_auc(  bag_clf,
           X_train, y_train, X_test, y_test,
           per_class=False
           )
@@ -256,7 +252,7 @@ print(classification_report(y_test, y_pred_log))
 plt.figure(figsize=(10,6))
 
 fx=sns.heatmap(confusion_matrix(y_test,y_pred_log), annot=True, fmt=".2f",cmap="viridis")
-fx.set_title('Confusion Matrix BaggingClassifier DecisionTreeClassifier\n');
+fx.set_title('Confusion Matrix BaggingClassifier LogisticRegression\n');
 fx.set_xlabel('\n Predicted Values\n')
 fx.set_ylabel('Actual Values\n');
 plt.show()
@@ -264,8 +260,7 @@ plt.show()
 #%% 4b Curva ROC
 
 classes=y
-roc_auc( 
-          bag_log,
+roc_auc(  bag_log,
           np.delete(X_train, -1, axis=1), y_train, np.delete(X_test, -1, axis=1), y_test,
           per_class=False
           )
@@ -303,7 +298,7 @@ fx.set_ylabel('Actual Values\n');
 plt.show()   
 #%% 5c curva ROC
 
-roc_auc(  rnd_clf,
+roc_auc(     rnd_clf,
              X_train, y_train, X_test, y_test,
              per_class=False
              )
@@ -410,8 +405,7 @@ fx.set_ylabel('Actual Values\n');
 plt.show()
 #%% 6i Curva ROC
 
-roc_auc( 
-             ada_clf_best,
+roc_auc(     ada_clf_best,
              X_train, y_train, X_test, y_test,
              per_class=False
              )
@@ -436,15 +430,14 @@ print(classification_report(y_test, y_pred_gbc))
 plt.figure(figsize=(10,6))
 
 fx=sns.heatmap(confusion_matrix(y_test,y_pred_gbc), annot=True, fmt=".2f",cmap="viridis")
-fx.set_title('Confusion Matrix AdaBoostClassifier\n');
+fx.set_title('Confusion Matrix GradientBoostingClassifier\n');
 fx.set_xlabel('\n Predicted Values\n')
 fx.set_ylabel('Actual Values\n');
 plt.show()
    
 #%% 7b Curva ROC
 
-roc_auc( 
-             gbc_cls,
+roc_auc(     gbc_cls,
              X_train, y_train, X_test, y_test,
              per_class=False
              )
